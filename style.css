@@ -1,0 +1,39 @@
+body{
+    display: flex;
+    /*align-items: center;*/
+    justify-content: center;
+}
+
+
+.calculator-frame{
+    height: 400px;
+    width: 350px;
+    border: 3px, solid green;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    padding-right: 10px;
+
+}
+
+.display{
+    width:345px;
+    height: 70px;
+    border: 1px solid green;
+    margin-bottom: 20px;
+}
+
+.buttons{
+    height: 20px;
+    width: 20px;
+    margin: 15px;
+    border: 1px solid green;
+    padding:10px;
+}
+
+.keys{
+    display:flex;
+    flex-wrap:wrap;
+    padding: 10px;
+    justify-content: space-between;
+}
