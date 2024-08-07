@@ -1,3 +1,5 @@
+//creating operation functions
+
 function add(num, num1){
     return sum = num + num1;
 }
@@ -39,25 +41,57 @@ function operate(leftOperand, operator,rightOperand){
 }
 
 
-const keys = document.querySelector('.keys');
+const leftKeys = document.querySelector('.left-keys');
+const display = document.querySelector('.display');
 
-for(let i = 0; i < 16; i++){
+//update display function
+let displayValue = '';
 
-    const buttons = document.createElement('div');
-    buttons.classList.add('buttons');
-    if( i === 3){
-        buttons.textContent = 'Cls';
-    }else if(i === 7){
-        buttons.textContent = '-';
+function updateDisplay(value){
+    displayValue += value;
+    display.textContent = displayValue;
+}
+
+for(let i = 0; i < 12; i++){
+
+    const leftButtons = document.createElement('div');
+    leftButtons.classList.add('left-buttons');
+    if( i === 10){
+        leftButtons.textContent = '=';
     }else if(i === 11){
-        buttons.textContent = '/';
-    }else if (i === 15){
-        buttons.textContent = '*';
+        leftButtons.textContent = '+';
     }else{
-        buttons.textContent = `${i}`;
+        leftButtons.textContent = `${i}`;
+        leftButtons.addEventListener('click', () => updateDisplay(i));
     }
-    
 
-    keys.appendChild(buttons);
+    leftKeys.appendChild(leftButtons);
+}
+
+const rightKeys = document.querySelector('.right-keys');
+
+//function to clear the screen
+function clearDisplay(){
+    displayValue = '';
+    display.textContent = displayValue;
+}
+
+for(let j = 0; j < 4; j++){
+
+    const rightButtons = document.createElement('div');
+    rightButtons.classList.add('right-buttons');
+
+    if( j === 0){
+        rightButtons.textContent = 'CLs';
+        rightButtons.addEventListener('click', clearDisplay);
+    }else if(j === 1){
+        rightButtons.textContent = '-';
+    }else if(j === 2){
+        rightButtons.textContent = '/';
+    }else if(j === 3){
+        rightButtons.textContent = '*';
+    }
+
+    rightKeys.appendChild(rightButtons);
 }
 
