@@ -16,28 +16,30 @@ function divide(num, num1){
     return quotient = num / num1;
 }
 
-let leftOperand, 
-    operator,
-    rightOperand;
+
+// Global variables
+
+let firstOperand = null, 
+    operator = null,
+    waitingForSecondOperand= false;
 
 function operate(leftOperand, operator,rightOperand){
     switch (operator){
-        case 'sum':
-            operator = add(leftOperand, rightOperand);
-            break;
-        case 'subtract':
-            operator = subtract(leftOperand, rightOperand);
-            break;
-        case 'multiply':
-            operator = multiply(leftOperand, rightOperand);
-            break;
-        case 'divide':
-            operator = divide(leftOperand, rightOperand);
-            break;
+        case '+':
+            return add(leftOperand, rightOperand);
+        case '-':
+            return subtract(leftOperand, rightOperand);
+            
+        case '*':
+            return multiply(leftOperand, rightOperand);
+            
+        case '/':
+            return divide(leftOperand, rightOperand);
+           
         default:
-            return 'invalid operation';
+            return rightOperand;
     }
-        return operator;
+        
 }
 
 
@@ -47,24 +49,54 @@ const display = document.querySelector('.display');
 //update display function
 let displayValue = '';
 
-function updateDisplay(value){
-    displayValue += value;
+function updateDisplay(value) {
+    if (waitingForSecondOperand) {
+        displayValue = value;
+        waitingForSecondOperand = false;
+    } else {
+        displayValue = displayValue === '0' ? value : displayValue + value;
+    }
+    display.textContent = displayValue;
+}
+
+function handleOperator(nextOperator) {
+    const inputValue = parseFloat(displayValue);
+    
+    if (operator && waitingForSecondOperand) {
+        operator = nextOperator;
+        return;
+    }
+
+    if (firstOperand === null && !isNaN(inputValue)) {
+        firstOperand = inputValue;
+    } else if (operator) {
+        const result = operate(firstOperand, operator, inputValue);
+        displayValue = `${parseFloat(result.toFixed(7))}`;
+        firstOperand = result;
+    }
+
+    waitingForSecondOperand = true;
+    operator = nextOperator;
     display.textContent = displayValue;
 }
 
 for(let i = 0; i < 12; i++){
-
     const leftButtons = document.createElement('div');
     leftButtons.classList.add('left-buttons');
-    if( i === 10){
+    if (i === 10) {
         leftButtons.textContent = '=';
-    }else if(i === 11){
+        leftButtons.addEventListener('click', () => {
+            if (operator && firstOperand !== null) {
+                handleOperator('=');
+            }
+        });
+    } else if (i === 11) {
         leftButtons.textContent = '+';
-    }else{
+        leftButtons.addEventListener('click', () => handleOperator('+'));
+    } else {
         leftButtons.textContent = `${i}`;
-        leftButtons.addEventListener('click', () => updateDisplay(i));
+        leftButtons.addEventListener('click', () => updateDisplay(i.toString()));
     }
-
     leftKeys.appendChild(leftButtons);
 }
 
@@ -72,9 +104,13 @@ const rightKeys = document.querySelector('.right-keys');
 
 //function to clear the screen
 function clearDisplay(){
-    displayValue = '';
+    displayValue = '0';
+    firstOperand = null;
+    operator = null;
+    waitingForSecondOperand = false;
     display.textContent = displayValue;
 }
+
 
 for(let j = 0; j < 4; j++){
 
@@ -86,10 +122,13 @@ for(let j = 0; j < 4; j++){
         rightButtons.addEventListener('click', clearDisplay);
     }else if(j === 1){
         rightButtons.textContent = '-';
+        rightButtons.addEventListener('click', () => handleOperator('-'));
     }else if(j === 2){
         rightButtons.textContent = '/';
+        rightButtons.addEventListener('click', () => handleOperator('/'))
     }else if(j === 3){
         rightButtons.textContent = '*';
+        rightButtons.addEventListener('click', () => handleOperator('*'));
     }
 
     rightKeys.appendChild(rightButtons);
